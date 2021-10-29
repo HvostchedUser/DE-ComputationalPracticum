@@ -48,18 +48,20 @@ class EulerMethod(NumericSolution):
 
 
 class ExactSolution:
-    def __init__(self, solution_text):
+    def __init__(self, solution_text, const_calc):
         self.solution_text = solution_text
+        self.const_calc = const_calc
 
-    def get_value(self, x):
+    def get_value(self, x, x0, y0):
+        c=eval(self.const_calc)
         return eval(self.solution_text)
 
 
 class Grapher:
-    def __init__(self, func_text, exact_solution_text):
+    def __init__(self, func_text, exact_solution_text, const_calc_text):
         self.ode = ODE(func_text)
         self.solutions = dict()
-        self.solutions["Exact solution"] = ExactSolution(exact_solution_text)
+        self.solutions["Exact solution"] = ExactSolution(exact_solution_text,const_calc_text)
         self.solutions["Runge-Kutta method"] = RungeKuttaMethod(self.ode)
         self.solutions["Euler method"] = EulerMethod(self.ode)
         self.solutions["Improved Euler method"] = ImprovedEulerMethod(self.ode)
@@ -74,7 +76,7 @@ class Grapher:
 
             x_list.append(tx + h)
             if sol_name == "Exact solution":
-                ty = self.solutions[sol_name].get_value(tx+h)
+                ty = self.solutions[sol_name].get_value(tx+h, x0,y0)
                 y_list.append(ty)
             else:
                 ty = self.solutions[sol_name].get_value(tx, ty, h)
